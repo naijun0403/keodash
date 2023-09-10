@@ -1,5 +1,6 @@
 package io.keodash
 
+import io.keodash.helper.CoreHelper
 import io.keodash.plugins.*
 import io.keodash.routings.accountRouting
 import io.ktor.server.application.*
@@ -18,6 +19,8 @@ fun Application.module() {
     configureDatabases()
     configureSockets()
     configureRouting()
+
+    CoreHelper.init(this)
 
     routing {
         accountRouting()

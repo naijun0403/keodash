@@ -1,5 +1,7 @@
 package io.keodash.plugins
 
+import io.keodash.databases.UserDto
+import io.keodash.databases.UserService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -15,7 +17,7 @@ fun Application.configureDatabases() {
     routing {
         // Create user
         post("/users") {
-            val user = call.receive<ExposedUser>()
+            val user = call.receive<UserDto>()
             val id = userService.create(user)
             call.respond(HttpStatusCode.Created, id)
         }
@@ -32,7 +34,7 @@ fun Application.configureDatabases() {
         // Update user
         put("/users/{id}") {
             val id = call.parameters["id"]?.toInt() ?: throw IllegalArgumentException("Invalid ID")
-            val user = call.receive<ExposedUser>()
+            val user = call.receive<UserDto>()
             userService.update(id, user)
             call.respond(HttpStatusCode.OK)
         }
