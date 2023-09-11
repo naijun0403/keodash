@@ -14,7 +14,8 @@ data class UserDto(
     val name: String,
     val password: String,
     val email: String,
-    val permission: UserPermission
+    val permission: UserPermission,
+    val isActive: Boolean = true
 )
 
 @Serializable
@@ -24,6 +25,7 @@ data class UserDao(
     val password: String,
     val email: String,
     val permission: UserPermission,
+    val isActive: Boolean = true,
     val createdAt: Long,
     val salt: String
 )
@@ -38,6 +40,7 @@ class UserService(
         val password = varchar("password", length = 100)
         val email = varchar("email", length = 100)
         val permission = enumeration<UserPermission>("permission")
+        val isActive = bool("is_active")
         val createdAt = long("createdAt")
         val salt = varchar("salt", length = 30)
 
@@ -61,6 +64,7 @@ class UserService(
             it[password] = BCrypt.hashpw(user.password, decidedSalt)
             it[email] = user.email
             it[permission] = user.permission
+            it[isActive] = user.isActive
             it[createdAt] = System.currentTimeMillis()
             it[salt] = decidedSalt
         }[Users.id]
@@ -76,6 +80,7 @@ class UserService(
                         password = row[Users.password],
                         email = row[Users.email],
                         permission = row[Users.permission],
+                        isActive = row[Users.isActive],
                         createdAt = row[Users.createdAt],
                         salt = row[Users.salt]
                     ) }
@@ -93,6 +98,7 @@ class UserService(
                         password = row[Users.password],
                         email = row[Users.email],
                         permission = row[Users.permission],
+                        isActive = row[Users.isActive],
                         createdAt = row[Users.createdAt],
                         salt = row[Users.salt]
                     ) }
@@ -110,6 +116,7 @@ class UserService(
                         password = row[Users.password],
                         email = row[Users.email],
                         permission = row[Users.permission],
+                        isActive = row[Users.isActive],
                         createdAt = row[Users.createdAt],
                         salt = row[Users.salt]
                     ) }
@@ -126,6 +133,7 @@ class UserService(
                 it[password] = BCrypt.hashpw(user.password, decidedSalt)
                 it[email] = user.email
                 it[permission] = user.permission
+                it[isActive] = user.isActive
                 it[salt] = decidedSalt
             }
         }

@@ -10,6 +10,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.mindrot.jbcrypt.BCrypt
 
 fun Routing.accountRouting() {
     val userService = CoreHelper.userServiceGetter?.invoke() ?: throw Exception("UserService not initialized")
@@ -67,7 +68,20 @@ fun Routing.accountRouting() {
                     return@post
                 }
 
-                call.respondText("1,1")
+                val nameResult = userService.readByName(model.userName)
+
+                // check password
+                if (nameResult == null || !BCrypt.checkpw(model.password, nameResult.password)) {
+                    call.respondText("-1")
+                    return@post
+                }
+
+                if (!nameResult.isActive) {
+                    call.respondText("-12")
+                    return@post
+                }
+
+                call.respondText("${nameResult.id},${nameResult.id}")
             }
         }
     }
